@@ -63,8 +63,6 @@ def main():
                     shot.kill()
                     asteroid.split()
 
-        if player.accel.length() > 0:
-            player.accel.normalize()
         pygame.display.flip()
         dt = clock.tick(60) / 1000
 
