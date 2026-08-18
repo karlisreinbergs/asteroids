@@ -1,6 +1,6 @@
 import pygame
 from circleshape import CircleShape
-from constants import LINE_WIDTH, PLAYER_RADIUS, PLAYER_SPEED, PLAYER_TURN_SPEED, PLAYER_SHOOT_SPEED, PLAYER_SHOOT_COOLDOWN_SECONDS
+from constants import LINE_WIDTH, PLAYER_RADIUS, PLAYER_SPEED, PLAYER_TURN_SPEED, PLAYER_SHOOT_SPEED, PLAYER_SHOOT_COOLDOWN_SECONDS, PLAYER_MAX_LIVES, SCREEN_HEIGHT, SCREEN_WIDTH, FRICTION
 from shot import Shot
 
 
@@ -9,9 +9,11 @@ class Player(CircleShape):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0.0
         self.cooldown_timer = 0.0
+        self.lives = PLAYER_MAX_LIVES
+        self.accel = pygame.Vector2(0, 0)
 
-    def draw(self, screen: pygame.Surface) -> None:
-        pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)
+    def draw(self, screen: pygame.Surface, color) -> None:
+        pygame.draw.polygon(screen, color, self.triangle(), LINE_WIDTH)
 
     def triangle(self) -> list[pygame.Vector2]:
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -53,4 +55,8 @@ class Player(CircleShape):
             rotated_vec = vec.rotate(self.rotation)
             scaled_vec = rotated_vec * PLAYER_SHOOT_SPEED
             new_shot.velocity = scaled_vec
-            self.cooldown_timer = PLAYER_SHOOT_COOLDOWN_SECONDS  
+            self.cooldown_timer = PLAYER_SHOOT_COOLDOWN_SECONDS 
+
+    def reset(self):
+        if self.lives > 0:
+            self.position = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
